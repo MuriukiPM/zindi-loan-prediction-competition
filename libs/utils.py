@@ -3,27 +3,81 @@ import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin, TransformerMixin
 
 class GetUnique(BaseEstimator, TransformerMixin):
-    def __init__(self, columns):
-        self.columns = columns
+    """Obtain total number of times each customer has the specified feature
+    
+    Parameters
+    ----------
+    X : pd.Dataframe containing the feature columns but not the target column
+    column: the single column of a pd.Dataframe that has the specified feature. 
+    
+    Methods
+    ------
+    fit : takes X and returns X
+    
+    transform : takes X and transforms the Dataframe to return a series with unique sums
+    
+    Returns
+    -------
+    series : pd.Series
+    
+    """
+    def __init__(self, column):
+        self.column = column
         
     def fit(self, X, y=None):
         return self
     
     def transform(self, X):
-        return X.groupby('customerid')[self.columns].unique().apply(
+        return X.groupby('customerid')[self.column].unique().apply(
             lambda x: sum(~pd.isna(x))).to_frame()
 
 class GetUid(BaseEstimator, TransformerMixin):
-    def __init__(self, columns):
-        self.columns = columns
+    """Obtain the customerids in the dataframe
+    
+    Parameters
+    ----------
+    X : the pd.Dataframe containing all the feature columns
+    column : the column name of the customerids
+    
+    Methods
+    -------
+    fit : takes X and returns X
+    
+    transform : takes X and transforms the Dataframe to return a series with unique customerids
+    
+    Returns
+    -------
+    series : pd.Series
+    
+    """
+    def __init__(self, column):
+        self.column = column
         
     def fit(self, X, y=None):
         return self
     
     def transform(self, X):
-        return pd.DataFrame(X[self.columns].unique())
+        return pd.DataFrame(X[self.column].unique())
     
 class GetMean(BaseEstimator, TransformerMixin):
+    """Obtain the mean of the values of a certain feature for each customer
+    
+    Parameters
+    ----------
+     X : the pd.Dataframe containing all the feature columns
+    column : the column name of the feature in question
+    
+    Methods
+    -------
+    fit : takes X and returns X
+    
+    transform : takes X and transforms the Dataframe to return a series with mean values for each customer under a certain column
+    
+    Returns 
+    -------
+    series : pd.Series
+    
+    """
     def __init__(self, columns):
         self.columns = columns
         
@@ -34,6 +88,8 @@ class GetMean(BaseEstimator, TransformerMixin):
         return X.groupby('customerid')[self.columns].mean().to_frame()
         
 class DaydeltaTransformer(BaseEstimator, TransformerMixin):
+    """DaydeltaTransformer
+    """
     def __init__(self, t1_col, t2_col, col_name):
         self.t1_col = t1_col
         self.t2_col = t2_col
@@ -51,6 +107,8 @@ class DaydeltaTransformer(BaseEstimator, TransformerMixin):
         return  Xr.groupby('customerid')[self.col_name].mean().to_frame()
 
 class TimedeltaTransformer(BaseEstimator, TransformerMixin):
+    """TimedeltaTransformer
+    """
     def __init__(self, t1_col, t2_col, col_name):
         self.t1_col = t1_col
         self.t2_col = t2_col
@@ -68,6 +126,8 @@ class TimedeltaTransformer(BaseEstimator, TransformerMixin):
         return Xr.groupby('customerid')[self.col_name].mean().to_frame()
 
 class AgeYears(BaseEstimator, TransformerMixin):
+    """AgeYears
+    """
     def __init__(self, t1_col, t2_col, col_name):
         self.t1_col = t1_col
         self.t2_col = t2_col
@@ -88,6 +148,8 @@ class AgeYears(BaseEstimator, TransformerMixin):
         return  Xr
 
 class ApprovalPeriod(BaseEstimator, TransformerMixin):
+    """ApprovalPeriod
+    """
     def __init__(self, t1_col, t2_col, col_name):
         self.t1_col = t1_col
         self.t2_col = t2_col
@@ -108,6 +170,8 @@ class ApprovalPeriod(BaseEstimator, TransformerMixin):
         return  Xr
     
 class ReferredTransformer(BaseEstimator, TransformerMixin):
+    """ReferredTransformer
+    """
     def __init__(self, columns, col_name):
         self.columns = columns
         self.col_name = col_name
@@ -122,6 +186,8 @@ class ReferredTransformer(BaseEstimator, TransformerMixin):
         return Xr
         
 class VarFillNa(BaseEstimator, TransformerMixin):
+    """VarFillNa
+    """
     def __init__(self, columns, var):
         self.columns = columns
         self.var = var
@@ -136,6 +202,8 @@ class VarFillNa(BaseEstimator, TransformerMixin):
         return Xr
 
 class ColumnDropTransformer(BaseEstimator, TransformerMixin):
+    """ColumnDropTransformer
+    """
     def __init__(self, columns):
         self.columns = columns
         
@@ -149,6 +217,8 @@ class ColumnDropTransformer(BaseEstimator, TransformerMixin):
         return Xr
 
 class StatFillNa(BaseEstimator, TransformerMixin):
+    """StatFillNa
+    """
     def __init__(self, col_1, col_2, stat):
         self.col_1 = col_1
         self.col_2 = col_2
@@ -185,6 +255,8 @@ class StatFillNa(BaseEstimator, TransformerMixin):
         return Xr
     
 class Encoder(BaseEstimator, TransformerMixin):
+    """ Encoder: 
+    """
     def __init__(self, columns):
         self.columns = columns
     
